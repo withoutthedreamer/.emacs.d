@@ -415,8 +415,7 @@
                    (setq TeX-master (guess-TeX-master (buffer-file-name)))
                    (turn-on-reftex)
                    (LaTeX-math-mode)
-                   (add-to-list 'TeX-expand-list '("%u" Okular-make-url))
-                   (zotelo-minor-mode)))
+                   (add-to-list 'TeX-expand-list '("%u" Okular-make-url))))
      #+END_SRC
 ** Auto-complete
    #+NAME: auto-complete-enable

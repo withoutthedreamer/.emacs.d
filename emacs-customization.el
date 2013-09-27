@@ -16,7 +16,8 @@
  '(quack-default-program "csi -:c")
  '(quack-fontify-style nil)
  '(quack-programs (quote ("csi -:c" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi")))
- '(quack-remap-find-file-bindings-p nil))
+ '(quack-remap-find-file-bindings-p nil)
+ '(safe-local-variable-values (quote ((TeX-master . t) (ruby-compilation-executable . "ruby") (ruby-compilation-executable . "ruby1.8") (ruby-compilation-executable . "ruby1.9") (ruby-compilation-executable . "rbx") (ruby-compilation-executable . "jruby")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -1,0 +1,6 @@
+[submodule "external/ghc-mod"]
+	path = external/ghc-mod
+	url = https://github.com/kazu-yamamoto/ghc-mod
+[submodule "external/ensime"]
+	path = external/ensime
+	url = https://github.com/aemoncannon/ensime

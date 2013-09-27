@@ -1,0 +1,1230 @@
+* Initialization
+- Cask
+  #+NAME: cask
+  #+BEGIN_SRC emacs-lisp
+    (require 'cask "~/cask.el/cask.el")
+    (cask-initialize)
+    (require 'pallet)
+  #+END_SRC
+- Load paths
+  #+NAME: load-paths
+  #+BEGIN_SRC emacs-lisp
+    (setq my-emacs-external-dir
+          (expand-file-name "external" my-emacs-config-dir))
+    (add-to-list 'load-path my-emacs-config-dir)
+    (dolist (project (directory-files my-emacs-external-dir t "\\w+"))
+      (when (file-directory-p project)
+        (add-to-list 'load-path project)))
+  #+END_SRC
+- Custom file
+  #+NAME: custom-file
+  #+BEGIN_SRC emacs-lisp
+    (setq custom-file (expand-file-name "emacs-customization.el" my-emacs-config-dir))
+    (load custom-file)
+  #+END_SRC
+
+* General customizations
+- Zenburn
+  #+NAME: zenburn
+  #+BEGIN_SRC emacs-lisp
+    (load-theme 'zenburn t)
+  #+END_SRC
+- Title format
+  #+NAME: title-format
+  #+BEGIN_SRC emacs-lisp
+    (setq frame-title-format
+          '((:eval (if (buffer-file-name)
+                       (abbreviate-file-name (buffer-file-name))
+                     "%b"))))
+  #+END_SRC
+- Get rid of of menu-bar, scroll-bar and tool-bar
+  #+NAME: visuals
+  #+BEGIN_SRC emacs-lisp
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1)
+    (tool-bar-mode -1)
+  #+END_SRC
+- Don't show the splash screen
+  #+NAME: splash-screen
+  #+BEGIN_SRC emacs-lisp
+    (setq inhibit-splash-screen t)
+  #+END_SRC
+- Start a server process
+  #+NAME: server-process
+  #+BEGIN_SRC emacs-lisp
+    (server-start)
+  #+END_SRC
+- Formatting stuff
+  #+NAME: formatting
+  #+BEGIN_SRC emacs-lisp
+    (setq fill-column 80)
+    (setq c-basic-offset 4)
+    (setq-default tab-width 4)
+    (setq-default indent-tabs-mode nil)
+    (setq font-lock-maximum-decoration t)
+    (set-face-attribute 'default nil :font "Source Code Pro-12")
+  #+END_SRC
+- Show column number, line number and highlight current column
+  #+NAME: column-line
+  #+BEGIN_SRC emacs-lisp
+    (global-hl-line-mode)
+    (column-number-mode t)
+    (line-number-mode t)
+  #+END_SRC
+- Wrap lines in text mode
+  #+NAME: wrap lines
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  #+END_SRC
+- Completion
+  #+NAME: completion
+  #+BEGIN_SRC emacs-lisp
+    (setq read-buffer-completion-ignore-case t)
+    (setq read-file-name-completion-ignore-case t)
+    (global-set-key (kbd "M-/") 'hippie-expand)
+  #+END_SRC
+- Automatically read files that have changed
+  #+NAME: revert-buffer
+  #+BEGIN_SRC emacs-lisp
+    (global-auto-revert-mode 1)
+  #+END_SRC
+- Subword mode for camel case languages
+  #+NAME: subword-mode
+  #+BEGIN_SRC emacs-lisp
+    (global-subword-mode 1)
+  #+END_SRC
+- Compilation stuff
+  #+NAME: compilation
+  #+BEGIN_SRC emacs-lisp
+    (setq compilation-scroll-output t)
+    (setq compilation-scroll-output 'first-error)
+    (global-set-key [f11] 'compile)
+    (global-set-key [f12] 'recompile)
+  #+END_SRC
+- Windows navigation and manipulation
+  #+NAME: windows
+  #+BEGIN_SRC emacs-lisp
+    (windmove-default-keybindings)
+    (winner-mode 1)
+    (global-set-key (kbd "C-S-<left>") 'buf-move-left)
+    (global-set-key (kbd "C-S-<right>") 'buf-move-right)
+    (global-set-key (kbd "C-S-<up>") 'buf-move-up)
+    (global-set-key (kbd "C-S-<down>") 'buf-move-down)
+  #+END_SRC
+- y and n have to suffice
+  #+NAME: y-n
+  #+BEGIN_SRC emacs-lisp
+    (fset 'yes-or-no-p 'y-or-n-p)
+  #+END_SRC
+- Use regex search by defaul
+  #+NAME: regex-search
+  #+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+    (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+    (global-set-key (kbd "M-%") 'query-replace-regexp)
+    (global-set-key (kbd "C-M-s") 'isearch-forward)
+    (global-set-key (kbd "C-M-r") 'isearch-backward)
+    (global-set-key (kbd "C-M-%") 'query-replace)
+  #+END_SRC
+- Standard browser
+  #+NAME: browser
+  #+BEGIN_SRC emacs-lisp
+    (setq browse-url-browser-function 'browse-url-generic
+          browse-url-generic-program "firefox")
+  #+END_SRC
+- Unique buffer names
+  #+NAME: buffer-names
+  #+BEGIN_SRC emacs-lisp
+    (require 'uniquify)
+    (setq uniquify-buffer-name-style 'post-forward)
+  #+END_SRC
+- Indentation
+  #+NAME: indentation
+  #+BEGIN_SRC emacs-lisp
+    (electric-indent-mode 1)
+  #+END_SRC
+- Parenthesis
+  #+NAME: parenthesis
+  #+BEGIN_SRC emacs-lisp
+    (require 'paren)
+    (setq show-paren-style 'parenthesis)
+    (show-paren-mode 1)
+  #+END_SRC
+- Save position in files
+  #+NAME: position-in-files
+  #+BEGIN_SRC emacs-lisp
+    (require 'saveplace)
+    (setq-default save-place t)
+  #+END_SRC
+- Replace selection on keypress
+  #+NAME: replace-selection
+  #+BEGIN_SRC emacs-lisp
+    (delete-selection-mode +1)
+  #+END_SRC
+- Store backups and autosave files in tmp dir
+  #+NAME: backups
+  #+BEGIN_SRC emacs-lisp
+    (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
+  #+END_SRC
+- Eldoc
+  #+NAME: eldoc
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+    (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+    (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+  #+END_SRC
+- Calendar Modifications for german dates
+  #+NAME: german-calendar
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'calendar-load-hook
+              (lambda ()
+                (calendar-set-date-style 'european)))
+
+    (progn
+      (setq calendar-week-start-day 1
+            calendar-day-name-array ["Sonntag" "Montag" "Dienstag" "Mittwoch"
+                                     "Donnerstag" "Freitag" "Samstag"]
+            calendar-month-name-array ["Januar" "Februar" "März" "April" "Mai"
+                                       "Juni" "Juli" "August" "September"
+                                       "Oktober" "November" "Dezember"])
+      (setq solar-n-hemi-seasons
+            '("Frühlingsanfang" "Sommeranfang" "Herbstanfang" "Winteranfang"))
+      (setq holiday-other-holidays
+            '((holiday-fixed 1 1 "Neujahr")
+              (holiday-fixed 5 1 "Maifeiertag")
+              (holiday-fixed 10 3 "Tag der Deutschen Einheit")
+              (holiday-fixed 12 25 "1. Weihnachtstag")
+              (holiday-fixed 12 26 "2. Weihnachtstag")
+              (holiday-easter-etc 39 "Christi Himmelfahrt")
+              (holiday-easter-etc (- 2) "Karfreitag")
+              (holiday-easter-etc 50 "Pfingstmontag")
+              (holiday-easter-etc 1 "Ostermontag"))))
+  #+END_SRC
+- Spellchecking
+  #+NAME: spellchecking
+  #+BEGIN_SRC emacs-lisp
+    (setq locale-coding-system 'utf-8)
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (set-selection-coding-system 'utf-8)
+    (prefer-coding-system 'utf-8)
+    (setq ispell-program-name "aspell")
+    (add-hook 'text-mode-hook 'flyspell-mode)
+  #+END_SRC
+- find-dired
+  #+NAME: find-dired
+  #+BEGIN_SRC emacs-lisp
+    (require 'find-dired)
+    (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+  #+END_SRC
+- Disable c electric flag
+  #+NAME: c-electric-flag
+  #+BEGIN_SRC emacs-lisp
+    (setq c-electric-flag nil)
+  #+END_SRC
+- Use ibuffer for buffer listing
+  #+NAME: ibuffer
+  #+BEGIN_SRC emacs-lisp
+    (defalias 'list-buffers 'ibuffer)
+  #+END_SRC
+- Rename file and buffer
+  #+NAME: rename-file-and-buffer
+  #+BEGIN_SRC emacs-lisp
+    (defun rename-current-buffer-file ()
+      "Renames current buffer an file it is visiting."
+      (interactive)
+      (let ((name (buffer-name))
+            (filename (buffer-file-name)))
+        (if (not (and filename (file-exists-p filename)))
+            (error "Buffer '%s' is not visiting a file!" name)
+          (let ((new-name (read-file-name "New name: " filename)))
+            (if (get-buffer new-name)
+                (error "A buffer named '%s' already exists!" new-name)
+              (rename-file filename new-name 1)
+              (rename-buffer new-name)
+              (set-visited-file-name new-name)
+              (set-buffer-modified-p nil)
+              (message "File '%s' successfully renamed to '%s'"
+                       name (file-name-nondirectory new-name)))))))
+
+    (global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
+  #+END_SRC
+- Vi like o and O
+  #+NAME: vi-like-open-new-line
+  #+BEGIN_SRC emacs-lisp
+    (defun open-next-line (arg)
+      "Move to next line and then opens a line."
+      (interactive "p")
+      (end-of-line)
+      (open-line arg)
+      (next-line 1)
+      (when newline-and-indent
+        (indent-according-to-mode)))
+
+    (global-set-key (kbd "C-o") 'open-next-line)
+
+    (defun open-previous-line (arg)
+      "Open a new line before the current one."
+      (interactive "p")
+      (beginning-of-line)
+      (open-line arg)
+      (when newline-and-indent
+        (indent-according-to-mode)))
+
+    (global-set-key (kbd "C-O") 'open-previous-line)
+
+    (defvar newline-and-indent t)
+  #+END_SRC
+- Edit file as root
+  #+NAME: edit-as-root
+  #+BEGIN_SRC emacs-lisp
+    (defun my-find-file-as-root ()
+      "Like `ido-find-file`, but automatically edit the file with
+      root-privileges (using tramp/sudo), if the file is not writable
+      by user."
+      (interactive)
+      (let ((file (ido-read-file-name "Edit as root: ")))
+        (unless (file-writable-p file)
+          (setq file (concat "/sudo:root@localhost:" file)))
+        (find-file file)))
+
+    (global-set-key (kbd "C-x F") 'my-find-file-as-root)
+  #+END_SRC
+- Move lines up and down
+  #+NAME: move-lines
+  #+BEGIN_SRC emacs-lisp
+    (defun move-line-up ()
+      "Move up the current line."
+      (interactive)
+      (transpose-lines 1)
+      (forward-line -2)
+      (indent-according-to-mode))
+
+    (defun move-line-down ()
+      "Move down the current line."
+      (interactive)
+      (forward-line 1)
+      (transpose-lines 1)
+      (forward-line -1)
+      (indent-according-to-mode))
+
+    (global-set-key [(meta shift up)] 'move-line-up)
+    (global-set-key [(meta shift down)] 'move-line-down)
+  #+END_SRC
+
+* Packages
+** use-package
+  #+NAME: use-package
+  #+BEGIN_SRC emacs-lisp
+    (require 'use-package)
+    (require 'bind-key)
+  #+END_SRC
+** Ack-and-a-half
+   - Autoload and alias to simpler names
+   #+NAME: ack-initialization
+   #+BEGIN_SRC emacs-lisp
+     (use-package ack-and-a-half
+       :init
+       (progn
+         (defalias 'ack 'ack-and-a-half)
+         (defalias 'ack-same 'ack-and-a-half-same)
+         (defalias 'ack-find-file 'ack-and-a-half-find-file)
+         (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)))
+   #+END_SRC
+** Auctex
+   - Enable some auctex options
+     #+NAME: auctex-options
+     #+BEGIN_SRC emacs-lisp
+       (setq TeX-auto-save t)
+       (setq TeX-parse-self t)
+       (setq-default TeX-master nil)
+       (setq reftex-plug-into-AUCTeX t)
+       (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+       (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" t)
+       (setq TeX-open-quote "\"`")
+       (setq TeX-close-quote "\"'")
+       (require 'reftex)
+     #+END_SRC
+
+   - Workaround to get german quotes
+     #+NAME: german-quotes
+     #+BEGIN_SRC emacs-lisp
+       (defadvice TeX-insert-quote (around wrap-region activate)
+         (cond
+          (mark-active
+           (let ((skeleton-end-newline nil))
+             (skeleton-insert `(nil ,TeX-open-quote _ ,TeX-close-quote) -1)))
+          ((looking-at (regexp-opt (list TeX-open-quote TeX-close-quote)))
+           (forward-char (length TeX-open-quote)))
+          (t
+           ad-do-it)))
+       (put 'TeX-insert-quote 'delete-selection nil)
+     #+END_SRC
+
+   - Guess master in multi-file projects
+     #+NAME: guess-master
+     #+BEGIN_SRC emacs-lisp
+       (defun guess-TeX-master (filename)
+         "Guess the master file for FILENAME from currently open .tex files."
+         (let ((candidate nil)
+               (filename (file-name-nondirectory filename)))
+           (save-excursion
+             (dolist (buffer (buffer-list))
+               (with-current-buffer buffer
+                 (let ((name (buffer-name))
+                       (file buffer-file-name))
+                   (if (and file (string-match "\\.tex$" file))
+                       (progn
+                         (goto-char (point-min))
+                         (if (re-search-forward
+                              (concat "\\\\input{" filename "}") nil t)
+                             (setq candidate file))
+                         (if (re-search-forward
+                              (concat "\\\\include{"
+                                      (file-name-sans-extension filename) "}") nil t)
+                             (setq candidate file))))))))
+           (if candidate
+               (message "TeX master document: %s" (file-name-nondirectory candidate)))
+           candidate))
+     #+END_SRC
+
+   - Make synctex suitable url for okular
+     #+NAME: okular-url
+     #+BEGIN_SRC emacs-lisp
+       (defun Okular-make-url ()
+         (concat
+          "file://"
+          (expand-file-name (funcall file (TeX-output-extension) t)
+                            (file-name-directory (TeX-master-file)))
+          "#src:"
+          (TeX-current-line)
+          (expand-file-name (TeX-master-directory))
+          "./"
+          (TeX-current-file-name-master-relative)))
+
+     #+END_SRC
+
+   - Latex mode hook
+     #+NAME: latex-mode-hook
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'LaTeX-mode-hook
+                 (lambda ()
+                   (setq TeX-master (guess-TeX-master (buffer-file-name)))
+                   (turn-on-reftex)
+                   (LaTeX-math-mode)
+                   (add-to-list 'TeX-expand-list '("%u" Okular-make-url))
+                   (zotelo-minor-mode)))
+     #+END_SRC
+** Auto-complete
+   #+NAME: auto-complete-enable
+   #+BEGIN_SRC emacs-lisp
+     (use-package auto-complete-config
+       :init
+       (progn
+         (ac-config-default)
+         (auto-complete-mode)))
+   #+END_SRC
+** Autopair
+   - Just enable it
+     #+NAME: autopair
+     #+BEGIN_SRC emacs-lisp
+       (use-package autopair
+         :init
+         (autopair-global-mode))
+     #+END_SRC
+** Ace-Jump-Mode
+   #+NAME: ace-jump-mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package ace-jump-mode
+       :init
+       (progn
+         (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+         (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)))
+   #+END_SRC
+** Cedet
+   - Enable semantic
+     #+NAME: semantic
+     #+BEGIN_SRC emacs-lisp
+       (use-package semantic
+         :config
+         (progn
+           (add-to-list 'semantic-default-submodes
+                        'global-semantic-idle-summary-mode)
+           (add-to-list 'semantic-default-submodes
+                        'global-semantic-idle-local-symbol-highlight-mode)
+           (add-hook 'prog-mode-hook
+                     (lambda ()
+                       (semantic-mode 1)))))
+     #+END_SRC
+** Clojure
+     #+NAME: clojure-stuff
+     #+BEGIN_SRC emacs-lisp
+       (use-package clojure-mode
+         :init
+         (progn
+           (add-hook 'nrepl-interaction-mode-hook
+                     'nrepl-turn-on-eldoc-mode)
+           (use-package nrepl-ritz))
+         :config
+         (progn
+           (setq nrepl-popup-stacktraces nil)
+           (eval-after-load "auto-complete"
+             '(add-to-list 'ac-modes 'nrepl-mode))
+           (define-clojure-indent
+              (describe 'defun)
+              (it 'defun)
+              (should 'defun)
+              (before-all 'defun)
+              (after-all 'defun)
+              (before 'defun)
+              (after 'defun)
+              (should-not 'defun)
+              (should= 'defun)
+              (around 'defun)
+              (should-throw 'defun)
+              (fact 'defun)
+              (facts 'defun))
+           (use-package ac-nrepl
+             :init
+             (progn
+               (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+               (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)))))
+     #+END_SRC
+** Ctags
+     #+NAME: enable-ctags
+     #+BEGIN_SRC emacs-lisp
+       (use-package ctags
+         :init
+         (progn
+           (global-set-key (kbd "<f5>") 'ctags-create-or-update-tags-table)
+           (global-set-key (kbd "M-.") 'my-ido-find-tag)
+           (defun my-ido-find-tag ()
+             "Find a tag using ido"
+             (interactive)
+             (tags-completion-table)
+             (let (tag-names)
+               (mapatoms (lambda (x)
+                           (push (prin1-to-string x t) tag-names))
+                         tags-completion-table)
+               (etags-select-find (ido-completing-read "Tag: " tag-names)))))
+         :config
+         (progn
+           (setq tags-case-fold-search nil)
+           (use-package etags-select)
+           (use-package etags)))
+     #+END_SRC
+** Eclim
+   - Initialization
+     #+NAME: eclim
+     #+BEGIN_SRC emacs-lisp
+       (use-package eclim
+         :init
+         (progn
+           ;; Don't clean up buffer in eclim buffers
+           (add-hook 'eclim-mode-hook
+                     (lambda ()
+                       (setq before-save-hook nil)))
+           (global-eclim-mode))
+         :config
+         (progn
+           (setq eclim-auto-save t)
+           (global-set-key [f2] 'eclim-java-show-documentation-for-current-element)
+           (setq help-at-pt-display-when-idle t)
+           (setq help-at-pt-timer-delay 0.1)
+           (help-at-pt-set-timer)
+           (use-package eclimd
+             :config
+             (progn
+               (custom-set-variables
+                '(eclim-eclipse-dirs '("~/eclipse")))
+               (setq eclim-executable "/home/spooky/eclipse/eclim")))
+           ;; Auto-complete
+           (use-package ac-emacs-eclim-source
+             :init
+             (ac-emacs-eclim-config))))
+     #+END_SRC
+** Ediff
+     #+NAME: ediff
+     #+BEGIN_SRC emacs-lisp
+       (use-package ediff
+         :config
+         (progn
+           (setq ediff-window-setup-function 'ediff-setup-windows-plain) ; don't create a second frame
+           (setq ediff-split-window-function 'split-window-horizontally))) ; horizontal split by default
+     #+END_SRC
+** exec-path-from-shell
+   #+NAME: exec-path-from-shell
+   #+BEGIN_SRC emacs-lisp
+     (use-package exec-path-from-shell
+       :init
+       (exec-path-from-shell-initialize))
+   #+END_SRC
+** Expand-region
+     #+NAME: expand-region
+     #+BEGIN_SRC emacs-lisp
+       (use-package expand-region
+         :init
+         (global-set-key (kbd "C-+") 'er/expand-region))
+     #+END_SRC
+** Flycheck
+   - Initialization
+   #+NAME: flycheck-initialization
+   #+BEGIN_SRC emacs-lisp
+     (use-package flycheck
+       :init
+       (progn
+         (global-flycheck-mode)))
+   #+END_SRC
+
+** Groovy
+   - Auto-complete
+   #+NAME: groovy-auto-complete
+   #+BEGIN_SRC emacs-lisp
+     (use-package groovy-mode
+       :init
+       (progn
+         (use-package inf-groovy)
+         (add-hook 'groovy-mode-hook
+                   (lambda ()
+                     (progn
+                       (setq c-electric-flag nil)
+                       (inf-groovy-keys)))))
+       :config
+       (setq c-electric-flag nil))           ; disable c-electric-flag, it does weird stuff
+   #+END_SRC
+** Haskell
+   - Enable eldoc and Indentation
+   #+NAME: haskell-eldoc-indentation
+   #+BEGIN_SRC emacs-lisp
+     (use-package haskell-mode
+       :init
+       (progn
+         (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+         (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation))
+       :config
+       (progn
+         (setq my-ghc-mod-dir (expand-file-name "ghc-mod/elisp" my-emacs-external-dir))
+         (add-to-list 'load-path my-ghc-mod-dir)
+         (autoload 'ghc-init "ghc" nil t)
+         (add-hook 'haskell-mode-hook (lambda ()
+                                        (ghc-init)
+                                        (flymake-mode)
+                                        (add-to-list 'ac-sources 'ac-source-ghc-mod)))
+         (setq ghc-ghc-options '("-Wall"))))
+   #+END_SRC
+
+** Ido
+   - Use ido everywhere, smex for M-x
+   #+NAME: ido
+   #+BEGIN_SRC emacs-lisp
+     (use-package ido
+       :init
+       (progn
+         (ido-mode 1))
+       :config
+       (progn
+         ;; (setq ido-enable-flex-matching t)
+         (setq ido-use-virtual-buffers t)
+         (use-package ido-ubiquitous
+           :init
+           (ido-ubiquitous-mode 1))
+         (use-package smex
+           :init
+           (progn
+             (smex-initialize)
+             (global-set-key (kbd "M-x") 'smex)
+             (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
+         (use-package flx-ido
+           :init
+           (progn
+             (flx-ido-mode 1)
+             (setq ido-use-faces nil)))))
+   #+END_SRC
+
+** Magit
+   - Initialization and keybinding
+   #+NAME: magit-init
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit
+       :init
+       (progn
+         (global-set-key (kbd "C-c m") 'magit-status)
+         ;; full screen magit. restore window configuration when magit is closed
+         (defadvice magit-status (around magit-fullscreen activate)
+           (window-configuration-to-register :magit-fullscreen)
+           ad-do-it
+           (delete-other-windows))
+         (defun magit-quit-session ()
+           "Restores the previous window configuration and kills the magit buffer"
+           (interactive)
+           (kill-buffer)
+           (jump-to-register :magit-fullscreen))
+         (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)))
+   #+END_SRC
+
+** Mu4e
+   - Initialization
+   #+NAME: mu4e-init
+   #+BEGIN_SRC emacs-lisp
+     (autoload 'mu4e "mu4e" "E-Mail for emacs" t)
+     (require 'org-mu4e)
+     (setq mail-user-agent 'mu4e-user-agent)
+   #+END_SRC
+
+   - Default values
+   #+NAME: mu4e-default-values
+   #+BEGIN_SRC emacs-lisp
+     (setq
+      mu4e-maildir "~/Mail/"
+      mu4e-sent-folder "/Posteo/Sent"
+      mu4e-drafts-folder "/Posteo/Drafts"
+      mu4e-trash-folder "/Posteo/Trash")
+     (setq
+      message-send-mail-function 'message-send-mail-with-sendmail
+      sendmail-program "/usr/bin/msmtp"
+      message-sendmail-extra-arguments '("-a" "posteowithoutthedreamer")
+      mail-host-address "posteo.de"
+      user-full-name "Christoph Koch"
+      user-mail-address "withoutthedreamer@posteo.de"
+      mu4e-user-mail-address-list '("withoutthedreamer@posteo.de"
+                                    "withoutthedreamer@gmx.de"
+                                    "christoph_koch@posteo.de"))
+   #+END_SRC
+
+   - Bookmarks
+   #+NAME: mu4e-bookmarks
+   #+BEGIN_SRC emacs-lisp
+     (eval-after-load "mu4e-vars"
+       '(progn
+          (add-to-list 'mu4e-bookmarks
+                       '("flag:unread AND NOT flag:trashed AND NOT maildir:/Posteo/Spam" "Unread Spamless" ?n))
+          (add-to-list 'mu4e-bookmarks
+                       '("date:today..now AND NOT maildir:/Posteo/Spam" "Today Spamless" ?h))
+          (add-to-list 'mu4e-bookmarks
+                       '("flag:unread AND maildir:/Posteo/Spam" "New Spam" ?s))))
+   #+END_SRC
+
+   - Accounts
+   #+NAME: mu4e-accounts
+   #+BEGIN_SRC emacs-lisp
+     (setq my-account-alist
+           '(("Lavabit"
+              (mu4e-sent-folder "/Lavabit/Sent")
+              (mu4e-drafts-folder "/Lavabit/Drafts")
+              (mu4e-trash-folder "/Lavabit/Trash")
+              (message-sendmail-extra-arguments '("-a" "lavabit"))
+              (mail-host-address "lavabit.com")
+              (user-mail-address "christoph_koch@lavabit.com"))
+             ("Uni"
+              (mu4e-sent-folder "/Uni/INBOX.Sent")
+              (mu4e-drafts-folder "/Uni/INBOX.Drafts")
+              (mu4e-trash-folder "/Uni/INBOX.Trash")
+              (message-sendmail-extra-arguments '("-a" "uni"))
+              (mail-host-address "informatik.uni-hamburg.de")
+              (user-mail-address "6koch@informatik.uni-hamburg.de"))
+             ("Posteo_Withoutthedreamer"
+              (mu4e-sent-folder "/Posteo/Sent")
+              (mu4e-drafts-folder "/Posteo/Drafts")
+              (mu4e-trash-folder "/Posteo/Trash")
+              (message-sendmail-extra-arguments '("-a" "posteo-withoutthedreamer"))
+              (mail-host-address "posteo.de")
+              (user-mail-address "withoutthedreamer@posteo.de"))
+             ("Posteo_Christoph_Koch"
+              (mu4e-sent-folder "/Posteo/Sent")
+              (mu4e-drafts-folder "/Posteo/Drafts")
+              (mu4e-trash-folder "/Posteo/Trash")
+              (message-sendmail-extra-arguments '("-a" "posteo-christophkoch"))
+              (mail-host-address "posteo.de")
+              (user-mail-address "christoph_koch@posteo.de"))))
+
+     (defun set-posteo-account ()
+       (setq
+        mu4e-sent-folder "/Posteo/Sent"
+        mu4e-drafts-folder "/Posteo/Drafts"
+        mu4e-trash-folder "/Posteo/Trash"
+        message-sendmail-extra-arguments '("-a" "posteowithoutthedreamer")
+        mail-host-address "posteo.de"
+        user-mail-address "withoutthedreamer@posteo.de"))
+
+     (defun set-posteo-realname-account ()
+       (setq
+        mu4e-sent-folder "/Posteo/Sent"
+        mu4e-drafts-folder "/Posteo/Drafts"
+        mu4e-trash-folder "/Posteo/Trash"
+        message-sendmail-extra-arguments '("-a" "posteochristophkoch")
+        mail-host-address "posteo.de"
+        user-full-name "Christoph Koch"
+        user-mail-address "christoph_koch@posteo.de"))
+
+     (defun set-lavabit-account ()
+       "sets the mu4e variables for lavabit account"
+       (setq
+        mu4e-sent-folder "/Lavabit/Sent"
+        mu4e-drafts-folder "/Lavabit/Drafts"
+        mu4e-trash-folder "/Lavabit/Trash"
+        message-sendmail-extra-arguments '("-a" "lavabit")
+        mail-host-address "lavabit.com"
+        user-full-name "Christoph Koch"
+        user-mail-address "christoph_koch@lavabit.com"))
+
+     (defun set-uni-account ()
+       "sets the mu4e variables for uni account"
+       (setq
+        mu4e-sent-folder "/Uni/INBOX.Sent"
+        mu4e-drafts-folder "/Uni/INBOX.Drafts"
+        mu4e-trash-folder "/Uni/INBOX.Trash"
+        message-sendmail-extra-arguments '("-a" "uni")
+        mail-host-address "informatik.uni-hamburg.de"
+        user-full-name "Christoph Koch"
+        user-mail-address "6koch@informatik.uni-hamburg.de"))
+
+     (defun ask-for-account ()
+       "ask for the account to set"
+       (let ((account
+              (completing-read "Compose with account: "
+                               '("Lavabit" "Uni" "Posteo" "Posteo (Christoph Koch)")
+                               nil t nil nil "Lavabit")))
+         (cond
+          ((string= account "Lavabit") (progn (set-lavabit-account)))
+          ((string= account "Uni") (progn (set-uni-account)))
+          ((string= account "Posteo") (progn (set-posteo-account)))
+          ((string= account "Posteo (Christoph Koch)") (progn (set-posteo-realname-account))))))
+
+     (add-hook 'mu4e-compose-pre-hook 'ask-for-account)
+   #+END_SRC
+
+   - Spam handling
+   #+NAME: mu4e-spam
+   #+BEGIN_SRC emacs-lisp
+     (defun train-bogofilter (msg)
+       "Train as spam"
+       (let* ((cmd (format "bogofilter -v -s < %s"
+                           (shell-quote-argument (mu4e-msg-field msg :path)))))
+         (shell-command cmd)))
+
+     (defun train-bogofilter-ham (msg)
+       "Train as ham"
+       (let* ((cmd (format "bogofilter -v -n < %s"
+                           (shell-quote-argument (mu4e-msg-field msg :path)))))
+         (shell-command cmd)))
+   #+END_SRC
+
+   - Show message in browser
+   #+NAME: mu4e-show-message-in-browser
+   #+BEGIN_SRC emacs-lisp
+     (defun mu4e-msgv-action-view-in-browser (msg)
+       "View the body of the message in a web browser."
+       (interactive)
+       (let ((html (mu4e-msg-field (mu4e-message-at-point t) :body-html))
+             (tmpfile (format "%s/%d.html" temporary-file-directory (random))))
+         (unless html (error "No html part for this message"))
+         (with-temp-file tmpfile
+           (insert
+            "<html>"
+            "<head><meta http-equiv=\"content-type\""
+            "content=\"text/html;charset=UTF-8\">"
+            html))
+         (browse-url (concat "file://" tmpfile))))
+   #+END_SRC
+
+   - Custom actions
+   #+NAME: mu4e-actions
+   #+BEGIN_SRC emacs-lisp
+     (eval-after-load "mu4e-view"
+       '(progn
+          (add-to-list 'mu4e-view-actions
+                       '("smark as spam" . train-bogofilter) t)
+          (add-to-list 'mu4e-view-actions
+                       '("nmark as ham" . train-bogofilter-ham) t)
+          (add-to-list 'mu4e-view-actions
+                       '("bview in browser" . mu4e-msgv-action-view-in-browser) t)))
+   #+END_SRC
+
+   - Inline images
+   #+NAME: mu4e-inline-images
+   #+BEGIN_SRC emacs-lisp
+     (setq mu4e-show-images t)
+     (when (fboundp 'imagemagick-register-types)
+       (imagemagick-register-types))
+   #+END_SRC
+
+   - Convert html to text
+   #+NAME: mu4e-html-to-text
+   #+BEGIN_SRC emacs-lisp
+     (setq mu4e-html2text-command "w3m -dump -cols 80 -T text/html")
+   #+END_SRC
+
+   - Update command
+   #+NAME: mu4e-update-command
+   #+BEGIN_SRC emacs-lisp
+     (setq mu4e-get-mail-command "offlineimap")
+     (setq mu4e-update-interval 600)
+   #+END_SRC
+
+   - Start mu4e fullscreen and hide it after use
+   #+NAME: mu4e-fullscreen
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-x m")
+                     (lambda ()
+                       "Bring up fullscreen mu4e or restore previous config."
+                       (interactive)
+                       (if (string= "mu4e-main-mode" major-mode)
+                           (jump-to-register :mu4e-fullscreen)
+                         (progn
+                           (window-configuration-to-register :mu4e-fullscreen)
+                           (mu4e)
+                           (delete-other-windows)))))
+   #+END_SRC
+
+   - Show related messages
+   #+NAME: mu4e-related-messages
+   #+BEGIN_SRC emacs-lisp
+     (setq mu4e-headers-include-related t)
+   #+END_SRC
+
+   - Don't include me in reply to all
+     #+NAME: mu4e-dont-reply-to-me
+   #+BEGIN_SRC emacs-lisp
+     (setq mu4e-compose-dont-reply-to-self t)
+   #+END_SRC
+
+** Org-mode
+   - Initialization
+   #+NAME: org-init
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+     (setq org-replace-disputed-keys t)
+     (global-set-key "\C-cl" 'org-store-link)
+     (global-set-key "\C-ca" 'org-agenda)
+     (global-set-key "\C-cb" 'org-iswitchb)
+   #+END_SRC
+
+   - Keywords
+   #+NAME: org-keywords
+   #+BEGIN_SRC emacs-lisp
+     (setq org-todo-keywords
+           (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
+                   (sequence "WAITING(w@/!)" "HOLD(h@/!" "|" "CANCELLED(c@/!)"))))
+   #+END_SRC
+
+   - Triggers
+   #+NAME: org-triggers
+   #+BEGIN_SRC emacs-lisp
+     (setq org-todo-state-tags-triggers
+           (quote (("CANCELLED" ("CANCELLED" . t))
+                   ("WAITING" ("WAITING" . t))
+                   ("HOLD" ("WAITING" . t) ("HOLD" . t))
+                   (done ("WAITING") ("HOLD"))
+                   ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+                   ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+                   ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+   #+END_SRC
+
+   - Directories and files
+   #+NAME: org-directories-and-files
+   #+BEGIN_SRC emacs-lisp
+     (setq org-directory "~/org/")
+     (setq org-agenda-files '("~/org/todo.org" "~/org/refile.org" "~/org/masterarbeit.org"))
+     (setq org-default-notes-file "~/org/refile.org")
+   #+END_SRC
+
+   - Capture
+   #+NAME: org-capture
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-c c") 'org-capture)
+
+     (setq org-capture-templates
+           (quote (("t" "todo" entry (file "~/org/refile.org")
+                    "* TODO %?\n")
+                   ("n" "note" entry (file "~/org/refile.org")
+                    "* %? :NOTE:\n%U\n%a\n")
+                   ("e" "todo from email/file" entry (file "~/org/refile.org")
+                    "* TODO %?\n%a\n"))))
+   #+END_SRC
+
+   - Refile
+   #+NAME: org-refile
+   #+BEGIN_SRC emacs-lisp
+     (setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                      (org-agenda-files :maxlevel . 9))))
+
+     (setq org-refile-use-outline-path t)
+
+     (setq org-outline-path-complete-in-steps nil)
+
+     (setq org-refile-allow-creating-parent-nodes (quote confirm))
+
+     ;; (defun my/verify-refile-target ()
+     ;;   "Exclude todo keywords with a done state from refile targets"
+     ;;   (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+
+     ;; (setq org-refile-target-verify-function 'my/verify-refile-target)
+   #+END_SRC
+
+   - Options
+   #+NAME: org-options
+   #+BEGIN_SRC emacs-lisp
+     (setq org-agenda-dim-blocked-tasks t)
+     (setq org-agenda-compact-blocks t)
+     (setq org-agenda-repeating-timestamp-show-all t)
+     (setq org-enforce-todo-dependencies t)
+     (setq org-deadline-warning-days 30)
+     (add-to-list 'org-modules 'org-habit)
+   #+END_SRC
+
+   - Agenda custom commands
+   #+NAME: org-agenda-commands
+   #+BEGIN_SRC emacs-lisp
+     (setq org-agenda-custom-commands
+           (quote (("N" "Notes" tags "NOTE"
+                    ((org-agenda-overriding-header "Notes")
+                     (org-tags-match-list-sublevels t)))
+                   ("r" "Tasks to Refile" tags "REFILE"
+                    ((org-agenda-overriding-header "Tasks to Refile")
+                     (org-tags-match-list-sublevels nil)))
+                   ("w" "Waiting Tasks" tags-todo "-CANCELLED+WAITING\!"
+                    ((org-agenda-overriding-header "Waiting and Postponed tasks")
+                     (org-tags-match-list-sublevels nil))))))
+   #+END_SRC
+
+   - Apt
+   #+NAME: org-apt
+   #+BEGIN_SRC emacs-lisp
+     (defun my/org-agenda-to-appt ()
+       (interactive)
+       (setq appt-time-msg-list nil)
+       (org-agenda-to-appt))
+
+     (add-hook 'org-finalize-agenda-hook 'my/org-agenda-to-appt 'append)
+
+     (my/org-agenda-to-appt)
+
+     (appt-activate t)
+
+     (run-at-time "24:01" nil 'my/org-agenda-to-appt)
+   #+END_SRC
+
+   - Tags
+   #+NAME: org-tags
+   #+BEGIN_SRC emacs-lisp
+     (setq org-agenda-tags-column -110)
+
+     (setq org-tag-alist (quote ((:startgroup)
+                                 ("@zuhause" . ?z)
+                                 ("@stadt" . ?s)
+                                 ("@uni" . ?u)
+                                 (:endgroup)
+                                 ("einkaufen" . ?e)
+                                 ("email" . ?E)
+                                 ("essen" . ?S)
+                                 ("familie" . ?f)
+                                 ("freunde" . ?F)
+                                 ("fitness" . ?q)
+                                 ("freizeit" . ?h)
+                                 ("geld" . ?g)
+                                 ("geburstag" . ?G)
+                                 ("hausarbeit" . ?H)
+                                 ("job" . ?j)
+                                 ("masterarbeit" . ?m)
+                                 ("treffen" . ?t))))
+   #+END_SRC
+
+   - Windmove
+   #+NAME: org-windmove
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-shiftup-final-hook 'windmove-up)
+     (add-hook 'org-shiftleft-final-hook 'windmove-left)
+     (add-hook 'org-shiftdown-final-hook 'windmove-down)
+     (add-hook 'org-shiftright-final-hook 'windmove-right)
+   #+END_SRC
+
+   - Mark parents as done when all the children are done, todo
+     otherwise.
+   #+NAME: org-mark-parent-done
+   #+BEGIN_SRC emacs-lisp
+     (defun org-summary-todo (n-done n-not-done)
+       "Switch entry to DONE when all subentries are done, to TODO otherwise."
+       (let (org-log-done org-log-states) ;turn off logging
+         (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+
+     (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+   #+END_SRC
+
+   - Write latex article with org-mode
+   #+NAME: org-latex-with-org
+   #+BEGIN_SRC emacs-lisp
+     (require 'org-latex)
+     (unless (boundp 'org-export-latex-classes)
+       (setq org-export-latex-classes nil))
+
+     (add-to-list 'org-export-latex-classes
+                  '("koma-article"
+                    "\\documentclass{scrartcl}"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+     (defun org-export-latex-no-toc (depth)
+       (when depth
+         (format "%% Org-mode is exporting headings to %s levels.\n"
+                 depth)))
+
+     (setq org-export-latex-format-toc-function 'org-export-latex-no-toc)
+   #+END_SRC
+** Projectile
+   - Initialization
+   #+NAME: projectile-init
+   #+BEGIN_SRC emacs-lisp
+     (use-package projectile
+       :init
+       (projectile-global-mode)
+       :config
+       (progn
+         (setq projectile-enable-caching t)
+         (setq projectile-use-native-indexing t)))
+   #+END_SRC
+** Python
+   - Hook
+   #+NAME: python-hook
+   #+BEGIN_SRC emacs-lisp
+     (use-package python-mode
+       :init
+       (progn
+         (use-package elpy)
+         (use-package jedi))
+       :config
+       (progn
+         (setq tab-width 4)
+         (setq python-indent 4)
+         (elpy-enable)))
+   #+END_SRC
+
+** Rainbow-Delimiter
+   #+NAME: rainbow-delimiter
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'prog-mode 'rainbow-delimiters-mode)
+   #+END_SRC
+** Ruby
+   - Rbenv
+   #+NAME: ruby-rbenv
+   #+BEGIN_SRC emacs-lisp
+     (use-package rbenv
+       :init
+       (add-hook 'ruby-mode-hook
+                 (lambda ()
+                   (rbenv-use-corresponding))))
+   #+END_SRC
+
+   - Auto-pair end
+   #+NAME: ruby-end
+   #+BEGIN_SRC emacs-lisp
+     (use-package ruby-end)
+   #+END_SRC
+
+   - Insert #{} in strings
+   #+NAME: ruby-interpolate
+   #+BEGIN_SRC emacs-lisp
+     (defun senny-ruby-interpolate ()
+       "In a double quoted string, interpolate."
+       (interactive)
+       (insert "#")
+       (when (and
+              (looking-back "\".*")
+              (looking-at ".*\""))
+         (insert "{}")
+         (backward-char 1)))
+
+     (eval-after-load 'ruby-mode
+       '(progn
+          (define-key ruby-mode-map (kbd "#") 'senny-ruby-interpolate)))
+   #+END_SRC
+
+   - Robe for completion
+   #+NAME: ruby-robe
+   #+BEGIN_SRC emacs-lisp
+     (use-package robe
+       :init
+       (progn
+         (add-hook 'ruby-mode-hook 'robe-mode)
+         (add-hook 'ruby-mode-hook
+                   (lambda ()
+                     (add-to-list 'ac-sources 'ac-source-robe)))))
+   #+END_SRC
+   - Rinari for Rails
+     #+NAME: rinari
+   #+BEGIN_SRC emacs-lisp
+     (use-package rinari
+       :init
+       (global-rinari-mode))
+   #+END_SRC
+** Scala
+   - Enable ensime
+   #+NAME: scala-ensime
+   #+BEGIN_SRC emacs-lisp
+     (use-package ensime
+       :load-path "external/ensime/elisp"
+       :init
+       (progn
+         (use-package scala-mode2)
+         (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)))
+   #+END_SRC
+** Session
+   - Save session
+   #+NAME: session
+   #+BEGIN_SRC emacs-lisp
+     (use-package session
+       :init
+       (add-hook 'after-init-hook 'session-initialize))
+   #+END_SRC
+
+** Twittering-mode
+   - Initialization
+   #+NAME: twittering-init
+   #+BEGIN_SRC emacs-lisp
+     (use-package twittering-mode
+       :init
+       (global-set-key (kbd "C-x t")
+                       (lambda ()
+                         "Bring up fullscreen twittering or restore previous config."
+                         (interactive)
+                         (if (string= "twittering-mode" major-mode)
+                             (jump-to-register :twittering-fullscreen)
+                           (progn
+                             (window-configuration-to-register :twittering-fullscreen)
+                             (twit)
+                             (delete-other-windows)))))
+       :config
+       (progn
+       (setq twittering-use-master-password t)
+       (setq twittering-icon-mode t)
+       (setq twittering-timer-interval 300)))
+   #+END_SRC
+
+** Whitespace-mode
+   - Mark bad whitespaces and cleanup on save
+   #+NAME: whitespace-mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package whitespace
+       :init
+       (progn
+         (add-hook 'before-save-hook 'whitespace-cleanup)
+         (global-whitespace-mode))
+       :config
+       (setq whitespace-style '(face tabs trailing lines-tail empty)))
+   #+END_SRC
+** Yasnippet
+  #+NAME: yasnippet
+  #+BEGIN_SRC emacs-lisp
+    (use-package yasnippet
+      :init
+      (progn
+        (yas-global-mode 1)
+        (setq my-snippets-dir
+              (expand-file-name "snippets" my-emacs-config-dir))
+        (yas/load-directory my-snippets-dir)))
+  #+END_SRC

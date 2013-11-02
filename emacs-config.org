@@ -138,11 +138,6 @@
     (require 'uniquify)
     (setq uniquify-buffer-name-style 'post-forward)
   #+END_SRC
-- Indentation
-  #+NAME: indentation
-  #+BEGIN_SRC emacs-lisp
-    (electric-indent-mode 1)
-  #+END_SRC
 - Parenthesis
   #+NAME: parenthesis
   #+BEGIN_SRC emacs-lisp
@@ -554,6 +549,18 @@
            (setq ediff-window-setup-function 'ediff-setup-windows-plain) ; don't create a second frame
            (setq ediff-split-window-function 'split-window-horizontally))) ; horizontal split by default
      #+END_SRC
+** Evil
+   #+NAME: evil
+   #+BEGIN_SRC emacs-lisp
+     (use-package evil
+       :init
+       (progn
+         (evil-mode 1)
+         (add-to-list 'evil-emacs-state-modes 'mu4e-main-mode)
+         (add-to-list 'evil-emacs-state-modes 'mu4e-headers-mode)
+         (add-to-list 'evil-emacs-state-modes 'mu4e-view-mode)))
+
+   #+END_SRC
 ** exec-path-from-shell
    #+NAME: exec-path-from-shell
    #+BEGIN_SRC emacs-lisp
@@ -576,6 +583,7 @@
        :init
        (progn
          (global-flycheck-mode)))
+
    #+END_SRC
 
 ** Groovy
@@ -589,6 +597,7 @@
          (add-hook 'groovy-mode-hook
                    (lambda ()
                      (progn
+                       (add-to-list 'ac-modes 'groovy-mode)
                        (setq c-electric-flag nil)
                        (inf-groovy-keys)))))
        :config
@@ -890,6 +899,25 @@
      (setq mu4e-compose-dont-reply-to-self t)
    #+END_SRC
 
+   - Attach files with dired
+   #+NAME: attach-files-with-dired
+   #+BEGIN_SRC emacs-lisp
+     (require 'gnus-dired)
+
+     (defun gnus-dired-mail-buffers ()
+       (let (buffers)
+         (save-current-buffer
+           (dolist (buffer (buffer-list t))
+             (set-buffer buffer)
+             (when (and (derived-mode-p 'message-mode)
+                        (null message-sent-message-via))
+               (push (buffer-name buffer) buffers))))
+         (nreverse buffers)))
+
+     (setq gnus-dired-mail-mode 'mu4e-user-agent)
+     (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+   #+END_SRC
+
 ** Org-mode
    - Initialization
    #+NAME: org-init
@@ -947,8 +975,8 @@
    - Refile
    #+NAME: org-refile
    #+BEGIN_SRC emacs-lisp
-     (setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                      (org-agenda-files :maxlevel . 9))))
+     (setq org-refile-targets '((nil :maxlevel . 9)
+                                      (org-agenda-files :maxlevel . 9)))
 
      (setq org-refile-use-outline-path t)
 
@@ -1166,10 +1194,11 @@
    #+NAME: scala-ensime
    #+BEGIN_SRC emacs-lisp
      (use-package ensime
-       :load-path "external/ensime/elisp"
+       :load-path "external/ensime/dist/elisp/"
        :init
        (progn
          (use-package scala-mode2)
+         (use-package ensime)
          (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)))
    #+END_SRC
 ** Session

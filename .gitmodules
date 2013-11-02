@@ -4,3 +4,6 @@
 [submodule "external/ensime"]
 	path = external/ensime
 	url = https://github.com/aemoncannon/ensime
+[submodule "external/groovy-mode"]
+	path = external/groovy-mode
+	url = https://github.com/russel/Emacs-Groovy-Mode

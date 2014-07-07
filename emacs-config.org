@@ -314,8 +314,9 @@
 ** use-package
   #+NAME: use-package
   #+BEGIN_SRC emacs-lisp
-    (require 'use-package)
-    (require 'bind-key)
+    (progn
+      (require 'use-package)
+      (require 'bind-key))
   #+END_SRC
 ** Ack-and-a-half
    - Autoload and alias to simpler names
@@ -425,9 +426,9 @@
    - Just enable it
      #+NAME: autopair
      #+BEGIN_SRC emacs-lisp
-       (use-package autopair
-         :init
-         (autopair-global-mode))
+       ;; (use-package autopair
+       ;;   :init
+       ;;   (autopair-global-mode))
      #+END_SRC
 ** Ace-Jump-Mode
    #+NAME: ace-jump-mode
@@ -487,6 +488,14 @@
                (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
                (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)))))
      #+END_SRC
+** Company-Mode
+   #+NAME: company-mode
+   #+BEGIN_SRC emacs-lisp
+     ;; (use-package company-mode
+     ;;   :init
+     ;;   (progn
+     ;;     (global-company-mode 1)))
+   #+END_SRC
 ** Ctags
      #+NAME: enable-ctags
      #+BEGIN_SRC emacs-lisp
@@ -552,13 +561,13 @@
 ** Evil
    #+NAME: evil
    #+BEGIN_SRC emacs-lisp
-     (use-package evil
-       :init
-       (progn
-         (evil-mode 1)
-         (add-to-list 'evil-emacs-state-modes 'mu4e-main-mode)
-         (add-to-list 'evil-emacs-state-modes 'mu4e-headers-mode)
-         (add-to-list 'evil-emacs-state-modes 'mu4e-view-mode)))
+     ;; (use-package evil
+     ;;   :init
+     ;;   (progn
+     ;;     (evil-mode 1)
+     ;;     (add-to-list 'evil-emacs-state-modes 'mu4e-main-mode)
+     ;;     (add-to-list 'evil-emacs-state-modes 'mu4e-headers-mode)
+     ;;     (add-to-list 'evil-emacs-state-modes 'mu4e-view-mode)))
 
    #+END_SRC
 ** exec-path-from-shell
@@ -586,6 +595,16 @@
 
    #+END_SRC
 
+** Go
+   #+NAME: go
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'load-path "/home/spooky/go/src/github.com/nsf/gocode/emacs")
+     (use-package go-mode
+       :init
+       (progn
+         (add-hook 'before-save-hook #'gofmt-before-save)
+         (use-package go-autocomplete)))
+   #+END_SRC
 ** Groovy
    - Auto-complete
    #+NAME: groovy-auto-complete
@@ -614,9 +633,9 @@
          (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation))
        :config
        (progn
-         (setq my-ghc-mod-dir (expand-file-name "ghc-mod/elisp" my-emacs-external-dir))
-         (add-to-list 'load-path my-ghc-mod-dir)
-         (autoload 'ghc-init "ghc" nil t)
+         ;; (setq my-ghc-mod-dir (expand-file-name "ghc-mod/elisp" my-emacs-external-dir))
+         ;; (add-to-list 'load-path my-ghc-mod-dir)
+         ;; (autoload 'ghc-init "ghc" nil t)
          (add-hook 'haskell-mode-hook (lambda ()
                                         (ghc-init)
                                         (flymake-mode)
@@ -652,6 +671,12 @@
              (setq ido-use-faces nil)))))
    #+END_SRC
 
+** Javascript
+   #+NAME: javascript2-mode
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+   #+END_SRC
 ** Magit
    - Initialization and keybinding
    #+NAME: magit-init
@@ -953,9 +978,9 @@
    - Directories and files
    #+NAME: org-directories-and-files
    #+BEGIN_SRC emacs-lisp
-     (setq org-directory "~/org/")
-     (setq org-agenda-files '("~/org/todo.org" "~/org/refile.org" "~/org/masterarbeit.org"))
-     (setq org-default-notes-file "~/org/refile.org")
+     (setq org-directory "~/Dropbox/org/")
+     (setq org-agenda-files '("~/Dropbox/org/todo.org" "~/Dropbox/org/refile.org" "~/Dropbox/org/masterarbeit.org"))
+     (setq org-default-notes-file "~/Dropbox/org/refile.org")
    #+END_SRC
 
    - Capture
@@ -1119,16 +1144,11 @@
    - Hook
    #+NAME: python-hook
    #+BEGIN_SRC emacs-lisp
-     (use-package python-mode
+     (use-package elpy
        :init
-       (progn
-         (use-package elpy)
-         (use-package jedi))
-       :config
-       (progn
-         (setq tab-width 4)
-         (setq python-indent 4)
-         (elpy-enable)))
+       (elpy-enable))
+
+     (use-package jedi)
    #+END_SRC
 
 ** Rainbow-Delimiter
@@ -1180,7 +1200,11 @@
          (add-hook 'ruby-mode-hook 'robe-mode)
          (add-hook 'ruby-mode-hook
                    (lambda ()
-                     (add-to-list 'ac-sources 'ac-source-robe)))))
+                     (add-to-list 'ac-sources 'ac-source-robe)))
+         (add-hook 'enh-ruby-mode-hook 'robe-mode)
+         (add-hook 'enh-ruby-mode-hook
+                   (lambda ()
+                     (add-to-list 'ac-sources 'ac-sources-robe)))))
    #+END_SRC
    - Rinari for Rails
      #+NAME: rinari
@@ -1188,6 +1212,14 @@
      (use-package rinari
        :init
        (global-rinari-mode))
+   #+END_SRC
+** Rust
+   #+NAME: rust
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'prog-mode-hook
+               '(lambda()
+                  (when (derived-mode-p 'rust-mode)
+                    (ggtags-mode 1))))
    #+END_SRC
 ** Scala
    - Enable ensime
@@ -1210,6 +1242,29 @@
        (add-hook 'after-init-hook 'session-initialize))
    #+END_SRC
 
+** Slime
+   #+NAME: slime
+   #+BEGIN_SRC emacs-lisp
+     ;; (use-package slime
+     ;;   :init
+     ;;   (progn
+     ;;     (use-package ac-slime
+     ;;       :init
+     ;;       (progn
+     ;;         (add-hook 'slime-mode-hook 'set-up-slime-ac)
+     ;;         (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+     ;;         (eval-after-load "auto-complete"
+     ;;           '(add-to-list 'ac-modes 'slime-repl-mode))))
+     ;;     (setq inferior-lisp-program "/usr/bin/sbcl")
+     ;;     (slime-setup)))
+   #+END_SRC
+** Smartparens
+   #+NAME: smartparens
+   #+BEGIN_SRC emacs-lisp
+     (use-package smartparens-config
+       :init
+       (smartparens-global-mode))
+   #+END_SRC
 ** Twittering-mode
    - Initialization
    #+NAME: twittering-init

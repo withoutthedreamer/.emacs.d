@@ -42,6 +42,7 @@
 (depends-on "less-css-mode")
 (depends-on "magit")
 (depends-on "nav")
+(depends-on "nginx-mode")
 (depends-on "pallet")
 (depends-on "pkg-info")
 (depends-on "pony-mode")
